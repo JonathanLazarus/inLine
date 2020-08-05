@@ -1,0 +1,60 @@
+CREATE DATABASE inLine;
+
+USE inLine;
+
+CREATE TABLE accounts (
+	account_id 				INT NOT NULL AUTO_INCREMENT,
+	account_access_level 	ENUM('admin', 'user'),
+	email 					VARCHAR(50),
+	phone_number 			VARCHAR(15),
+	first_name 				VARCHAR(25),
+	last_name 				VARCHAR(25),
+	account_password 		VARCHAR(50),
+	PRIMARY KEY (account_id)
+);
+
+CREATE TABLE stores (
+	store_id		INT NOT NULL AUTO_INCREMENT,
+	email 			VARCHAR(50),
+	phone_number 	VARCHAR(15),
+	store_name		VARCHAR(50),
+	location_id		INT,
+	capacity		INT,
+	PRIMARY KEY (store_id)
+);
+
+CREATE TABLE ownership (
+	ownership_id	INT NOT NULL AUTO_INCREMENT,
+	account_id		INT,
+	store_id		INT,
+	PRIMARY KEY (ownership_id)
+);
+
+CREATE TABLE store_hours (
+	hours_id			INT NOT NULL AUTO_INCREMENT,
+	store_id			INT,
+	day_of_the_week		VARCHAR(10),
+	time_open			TIME,
+	time_close			TIME,
+	PRIMARY KEY (hours_id)
+);
+
+CREATE TABLE user_state (
+	account_id		INT NOT NULL AUTO_INCREMENT,
+	user_state		ENUM('idle', 'waiting', 'shopping'), 
+	store_id		INT,	# this for sure can be null
+	time_stamp		DATETIME,
+	PRIMARY KEY (account_id)
+);
+
+CREATE TABLE location (
+	location_id		INT NOT NULL AUTO_INCREMENT,
+	street_name		VARCHAR(50),
+	house_number	VARCHAR(15),
+	apt_number		VARCHAR(15),
+	country			VARCHAR(50),
+	city			VARCHAR(50),
+	state			VARCHAR(50),
+	zip_code		VARCHAR(15),
+	PRIMARY KEY (location_id)
+);
