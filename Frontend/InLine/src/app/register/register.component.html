@@ -1,0 +1,37 @@
+<div>
+  <h4>Create an Administrator Account</h4>
+  <div>
+    <div>
+      <label>Account type: </label>
+      <mat-radio-group [(ngModel)]="accountType">
+        <mat-radio-button [value]="AccountTypes.USER" checked >User</mat-radio-button>
+        <mat-radio-button [value]="AccountTypes.ADMIN" >Admin</mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <br>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="standard">
+        <input matInput placeholder="Username" formControlName="username" required>
+      </mat-form-field>
+      <br>
+      <mat-form-field appearance="standard">
+        <input matInput placeholder="Email" formControlName="email" required>
+      </mat-form-field>
+      <br>
+      <mat-form-field appearance="standard">
+        <input matInput placeholder="Contact Number" formControlName="contactNumber" required>
+      </mat-form-field>
+      <br>
+      <mat-form-field appearance="standard">
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
+        <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+      <br>
+      <!-- require retype password -->
+      <button mat-button type="submit">Create Account</button>
+    </form>
+  </div>
+</div>
