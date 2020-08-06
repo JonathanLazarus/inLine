@@ -3,7 +3,7 @@ package com.inLine.api;
 import com.inLine.dao.LocationDao;
 import com.inLine.dao.StoreDao;
 import com.inLine.model.Store;
-import com.inLine.model.containter.StoreLocation;
+import com.inLine.model.container.StoreLocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

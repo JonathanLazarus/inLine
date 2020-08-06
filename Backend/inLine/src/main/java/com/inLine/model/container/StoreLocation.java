@@ -1,4 +1,4 @@
-package com.inLine.model.containter;
+package com.inLine.model.container;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.inLine.model.Location;
