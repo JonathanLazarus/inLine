@@ -61,6 +61,10 @@ public class Account implements UserDetails {
         this.lastName = lastName;
         this.password = password;
     }
+
+    public Account() {
+    }
+
     public Set<SimpleGrantedAuthority> getGrantedAuthorities(){
         Set<SimpleGrantedAuthority> permissions = new HashSet<>();
         permissions.add(new SimpleGrantedAuthority("ROLE_" + Access.valueOf(level).name()));

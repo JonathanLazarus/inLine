@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface AccountDao extends JpaRepository<Account, Integer> {
+   @Query("FROM Account WHERE email = ?1")
    Optional<Account> selectUserByEmail(String username);
 
 }

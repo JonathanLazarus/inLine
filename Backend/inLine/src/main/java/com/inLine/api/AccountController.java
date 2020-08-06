@@ -26,9 +26,8 @@ public class AccountController {
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
     private MyUserDetailsService userDetailsService;
-    //insert provider
-    public AccountController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, MyUserDetailsService userDetailsService) {
 
+    public AccountController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, MyUserDetailsService userDetailsService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userDetailsService = userDetailsService;

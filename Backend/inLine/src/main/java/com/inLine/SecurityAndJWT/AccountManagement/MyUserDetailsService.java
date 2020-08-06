@@ -29,5 +29,6 @@ public class MyUserDetailsService implements UserDetailsService {
         return userRepository.selectUserByEmail(s)
                 .orElseThrow(()-> new UsernameNotFoundException(String.format("Username %s not found", s)));
 
+        //return null;
     }
 }
