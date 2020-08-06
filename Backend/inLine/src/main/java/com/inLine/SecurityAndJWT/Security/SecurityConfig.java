@@ -49,7 +49,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public SecurityConfig(MyUserDetailsService applicationUserService, SecretKey secretKey, PasswordEncoder passwordEncoder, UserDetailsService jwtUserDetailsService, JwtRequestFilter jwtRequestFilter) {
-        //insert provider
         this.applicationUserService = applicationUserService;
 
         this.secretKey = secretKey;
@@ -57,6 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.jwtUserDetailsService = jwtUserDetailsService;
         this.jwtRequestFilter = jwtRequestFilter;
     }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -70,6 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/", "/index", "/css/*", "/js/*").permitAll()
                 .antMatchers("/login/submit", "/register/submit").permitAll()
+                .antMatchers("/stores", "/stores.*").permitAll()
                 //.antMatchers("/user").hasRole(Account.Access.USER.name())
                 ///.antMatchers("/admin").hasRole(Account.Access.ADMIN.name())
                 .anyRequest()
