@@ -10,4 +10,4 @@ Run `npm install`
 ## Opening the Development Server
 In directory `Frontend/InLine/` run `ng serve`
 
-Use `ng serve --open` to open server page when server is finished
+Use `ng serve --open` to open the webpage when the server is finished compiling
