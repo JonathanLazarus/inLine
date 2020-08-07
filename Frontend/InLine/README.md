@@ -6,9 +6,9 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 https://nodejs.org/en/about/releases/
 
-## Installing Angular CLI
+## Installing Dependencies
 
-run `npm install -g @angular/cli`
+run `npm install`
 
 ## Development server
 
