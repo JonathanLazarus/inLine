@@ -2,7 +2,7 @@
 Runs a development server on localhost:8080
 
 ## Install NodeJS
-Install (NodeJS)[https://nodejs.org/en/about/releases/] version 12.18.2
+Install [NodeJS](https://nodejs.org/en/about/releases/) version 12.18.2
 
 ## Installing dependecies
 Run `npm install`
