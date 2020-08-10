@@ -4,14 +4,17 @@
     <div>
       <label>Account type: </label>
       <mat-radio-group [(ngModel)]="accountType">
-        <mat-radio-button [value]="AccountTypes.USER" checked >User</mat-radio-button>
+        <mat-radio-button [value]="AccountTypes.USER" >User</mat-radio-button>
         <mat-radio-button [value]="AccountTypes.ADMIN" >Admin</mat-radio-button>
       </mat-radio-group>
     </div>
     <br>
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <mat-form-field appearance="standard">
-        <input matInput placeholder="Username" formControlName="username" required>
+        <input matInput placeholder="First Name" formControlName="first_name" required>
+      </mat-form-field>
+      <mat-form-field appearance="standard">
+        <input matInput placeholder="Last Name" formControlName="last_name" required>
       </mat-form-field>
       <br>
       <mat-form-field appearance="standard">

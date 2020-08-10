@@ -2,10 +2,30 @@ import {Store} from './store';
 import {AccountTypes} from './account-types';
 
 export class User {
-  username: string;
-  token: string;
-  storeList: Store[];
+  constructor(
+    public email: string,
+    public password: string,
 
-  // TODO: Temp[Dev] - remove upon implementation: token
-  accessLevel: AccountTypes;
+    // tslint:disable-next-line:variable-name
+    public account_type: AccountTypes,
+
+    // tslint:disable-next-line:variable-name
+    public first_name: string,
+
+    // tslint:disable-next-line:variable-name
+    public last_name: string,
+
+    public storeList: Store[],
+    public token: string
+  ){}
+
+  public getAsJSON(): JSON {
+    return {
+      email: this.email,
+      password: this.password,
+      account_type: this.account_type,
+      first_name: this.first_name,
+      last_name: this.last_name
+    } as unknown as JSON;
+  }
 }
