@@ -5,6 +5,7 @@ import com.inLine.dao.StoreDao;
 import com.inLine.model.Store;
 import com.inLine.model.container.StoreLocation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class StoreController {
     private LocationDao locationDao;
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void createStore(@RequestBody StoreLocation containter){
         int locationId = locationDao.save(containter.getLocation()).getId();
         Store s = containter.getStore();
@@ -39,6 +41,7 @@ public class StoreController {
     }
 
     @PutMapping(path = "{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void updateStoreById(@PathVariable("id") int id, @RequestBody Store update) {
         Store s = storeDao.findById(id).orElse(null);
         if (s == null) return;

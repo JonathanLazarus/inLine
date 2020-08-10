@@ -24,16 +24,12 @@ public class Account implements UserDetails {
     public enum Access {
         ADMIN, USER;
 
-        public Set<SimpleGrantedAuthority> getGrantedAuthorities(){
-            Set<SimpleGrantedAuthority> permissions = new HashSet<>();
-            permissions.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
-            return permissions;
-        }
+
     }
 
 
     @Column(name = "account_access_level")
-    private Access level;
+    private String level;
 
     @Column(name = "email")
     private String email;
@@ -51,7 +47,7 @@ public class Account implements UserDetails {
     private String password;
 
     public Account(//@JsonProperty("id") int id,
-                   @JsonProperty("account_type") Access level,
+                   @JsonProperty("account_type") String level,
                    @JsonProperty("email") String email,
                    @JsonProperty("phone") long phoneNumber,
                    @JsonProperty("first_name") String firstName,
@@ -66,6 +62,15 @@ public class Account implements UserDetails {
         this.password = password;
     }
 
+    public Account() {
+    }
+
+    public Set<SimpleGrantedAuthority> getGrantedAuthorities(){
+        Set<SimpleGrantedAuthority> permissions = new HashSet<>();
+        permissions.add(new SimpleGrantedAuthority("ROLE_" + Access.valueOf(level).name()));
+        return permissions;
+    }
+
     public int getId() {
         return id;
     }
@@ -74,11 +79,11 @@ public class Account implements UserDetails {
         this.id = id;
     }
 
-    public Access getLevel() {
+    public String getLevel() {
         return level;
     }
 
-    public void setLevel(Access level) {
+    public void setLevel(String level) {
         this.level = level;
     }
 
@@ -120,7 +125,7 @@ public class Account implements UserDetails {
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return level.getGrantedAuthorities();
+        return getGrantedAuthorities();
     }
 
     @Override

@@ -9,7 +9,7 @@ CREATE TABLE accounts (
 	phone_number 			VARCHAR(15),
 	first_name 				VARCHAR(25),
 	last_name 				VARCHAR(25),
-	account_password 		VARCHAR(50),
+	account_password 		VARCHAR(60),
 	PRIMARY KEY (account_id)
 );
 
@@ -42,7 +42,7 @@ CREATE TABLE store_hours (
 CREATE TABLE user_state (
 	account_id		INT NOT NULL AUTO_INCREMENT,
 	user_state		ENUM('idle', 'waiting', 'shopping'), 
-	store_id		INT,	# this for sure can be null
+	store_id		INT,
 	time_stamp		DATETIME,
 	PRIMARY KEY (account_id)
 );

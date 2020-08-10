@@ -14,22 +14,21 @@ import org.springframework.stereotype.Service;
 public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private final AccountDao userRepository;
+    AccountDao userRepository;
     @Autowired
-    private final PasswordEncoder passwordEncoder;
+    PasswordEncoder passwordEncoder;
 
-    public MyUserDetailsService(@Qualifier("fake") AccountDao userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+
 
     public void addUser(Account newAccount){
         newAccount.setEncodedPassword(passwordEncoder);
-        userRepository.addUser(newAccount);
+        userRepository.save(newAccount);
     }
     @Override
     public Account loadUserByUsername(String s) throws UsernameNotFoundException {
         return userRepository.selectUserByEmail(s)
                 .orElseThrow(()-> new UsernameNotFoundException(String.format("Username %s not found", s)));
+
+        //return null;
     }
 }
