@@ -23,7 +23,7 @@ export class User {
     return {
       email: this.email,
       password: this.password,
-      account_type: this.account_type,
+      account_type: (this.account_type === AccountTypes.ADMIN) ? 'ADMIN' : 'USER', // TODO: Fix the enum!
       first_name: this.first_name,
       last_name: this.last_name
     } as unknown as JSON;

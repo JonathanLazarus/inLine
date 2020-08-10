@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      username: [''],
+      email: [''],
       password: ['']
     });
   }
@@ -50,7 +50,6 @@ export class LoginComponent implements OnInit {
   get f(): { [p: string]: AbstractControl } { return this.form.controls; }
 
   onSubmit(): void {
-    console.log(this.form.value);
     this.accountService.login(this.f.email.value, this.f.password.value).subscribe();
     this.dialogRef.close();
   }

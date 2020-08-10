@@ -32,6 +32,8 @@ export class AccountService {
         Authorization: 'my-auth-token'
       })
     };
+    this.userSubject.next(user);
+    console.log(user.getAsJSON());
 
     return this.http.post<User>(`${environment.backendURL}/register/submit`, user.getAsJSON())
       .pipe(
@@ -43,6 +45,8 @@ export class AccountService {
         }),
         catchError(this.handleError<any>('register user'))
       );
+
+
   }
 
   login(email: string, password: string): Observable<User> {

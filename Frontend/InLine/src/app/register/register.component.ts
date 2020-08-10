@@ -57,7 +57,6 @@ export class RegisterComponent implements OnInit {
   get f(): { [p: string]: AbstractControl } { return this.form.controls; }
 
   onSubmit(): void {
-    console.log(this.form.value, AccountTypes[this.accountType]);
     this.accountService.register(new User(
       this.f.email.value,
       this.f.password.value,
