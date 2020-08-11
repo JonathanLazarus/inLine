@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable, of, throwError} from 'rxjs';
-import { User } from '../_objects/user';
-import { AccountTypes } from '../_objects/account-types';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, Observable, of} from 'rxjs';
+import {User} from '../_objects/user';
+import {AccountTypes} from '../_objects/account-types';
 import {Router} from '@angular/router';
-import {catchError, map, tap, retry} from 'rxjs/operators';
+import {catchError, tap} from 'rxjs/operators';
 import {environment} from '../../environments/environment';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -25,38 +25,41 @@ export class AccountService {
   }
 
   register(user: User): Observable<User> {
-    // Use as 3rd param in http request
-    const httpHeader = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/json',
-        Authorization: 'my-auth-token'
-      })
-    };
-    this.userSubject.next(user);
-    console.log(user.getAsJSON());
-
-    return this.http.post<User>(`${environment.backendURL}/register/submit`, user.getAsJSON())
+    return this.http.post<string>(`${environment.backendURL}/register/submit`, user.getAsJSON())
       .pipe(
-        tap((u: User) => {
-          console.log(`Added user by name of '${u.first_name}'`);
-          localStorage.setItem('user', JSON.stringify(u));
-          this.userSubject.next(u);
-          return u;
+        tap((JWToken: string) => {
+          user.token = JWToken;
+          user.password = undefined; // Don't keep password in storage!
+
+          localStorage.setItem('user', JSON.stringify(user));
+          this.userSubject.next(user);
+
+          console.log(`Added user object: '${user}'`);
         }),
         catchError(this.handleError<any>('register user'))
       );
-
-
   }
 
   login(email: string, password: string): Observable<User> {
-    return this.http.post<User>(`${environment.backendURL}/login/submit`, {email, password})
+    return this.http.post<string>(`${environment.backendURL}/login/submit`, {email, password})
       .pipe(
-        tap((u: User) => {
-          console.log(`Added user by name of '${u.first_name}'`);
-          localStorage.setItem('user', JSON.stringify(u));
-          this.userSubject.next(u);
-          return u;
+        tap((response: any) => {
+          const JSONResponse = JSON.parse(response);
+
+          const registeredUser = new User(
+            email,
+            undefined,
+            JSONResponse.account_type,
+            JSONResponse.first_name,
+            JSONResponse.last_name,
+            JSONResponse.storeList,
+            JSONResponse.token
+          );
+
+          localStorage.setItem('user', JSON.stringify(registeredUser));
+          this.userSubject.next(registeredUser);
+
+          console.log(`Added user object: '${registeredUser}'`);
         }),
         catchError(this.handleError<any>('login user'))
       );

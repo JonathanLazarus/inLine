@@ -65,7 +65,9 @@ export class RegisterComponent implements OnInit {
       this.f.last_name.value,
       undefined,
       undefined
-    )).subscribe();
+    )).subscribe(n => {
+      console.log('Next from Register.onSubmit()', n);
+    });
 
     this.dialogRef.close();
   }
