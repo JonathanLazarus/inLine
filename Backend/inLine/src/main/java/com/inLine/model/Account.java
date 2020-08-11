@@ -21,11 +21,11 @@ public class Account implements UserDetails {
     @Column(name = "account_id")
     private int id;
 
-    public enum Access {
-        ADMIN, USER;
-
-
-    }
+//    public enum Access {
+//        ADMIN, USER;
+//
+//
+//    }
 
 
     @Column(name = "account_access_level")
@@ -67,7 +67,7 @@ public class Account implements UserDetails {
 
     public Set<SimpleGrantedAuthority> getGrantedAuthorities(){
         Set<SimpleGrantedAuthority> permissions = new HashSet<>();
-        permissions.add(new SimpleGrantedAuthority("ROLE_" + Access.valueOf(level).name()));
+        permissions.add(new SimpleGrantedAuthority("ROLE_" + level.toUpperCase()));
         return permissions;
     }
 
@@ -123,6 +123,8 @@ public class Account implements UserDetails {
     public void setPassword(String password) {
         this.password = password;
     }
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getGrantedAuthorities();

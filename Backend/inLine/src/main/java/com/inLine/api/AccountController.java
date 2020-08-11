@@ -1,22 +1,25 @@
 package com.inLine.api;
 
 
-
 import com.inLine.SecurityAndJWT.AccountManagement.MyUserDetailsService;
 import com.inLine.SecurityAndJWT.jwt.JwtRequest;
 import com.inLine.SecurityAndJWT.jwt.JwtResponse;
 import com.inLine.SecurityAndJWT.jwt.JwtTokenUtil;
 import com.inLine.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 public class AccountController {
 
 
@@ -34,32 +37,33 @@ public class AccountController {
     }
 
     @PostMapping("/login/submit")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-        authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) {
+
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
+        } catch (AuthenticationException e) {
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("username or password is incorrect");
+        }
+
         final Account newAccountDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getEmail());
         final String token = jwtTokenUtil.generateToken(newAccountDetails);
-        return ResponseEntity.ok(new JwtResponse(token));
-    }
-    private void authenticate(String username, String password) throws Exception {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        } catch (Exception e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
-        }
+        return ResponseEntity.ok(new JwtResponse(token, newAccountDetails.getFirstName()));
     }
 
     @PostMapping("/register/submit")
-    public ResponseEntity<?> CreateAccount (@RequestBody Account registerDetails) throws Exception {
-        try{
+    public ResponseEntity<?> CreateAccount(@RequestBody Account registerDetails) {
+
+        try {
             userDetailsService.loadUserByUsername(registerDetails.getEmail());
-            throw new Exception("there is a account with this username");
-        }catch (UsernameNotFoundException e){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("there is a account with this username");
 
+        } catch (UsernameNotFoundException e) {
             userDetailsService.addUser(registerDetails);
-
             final String token = jwtTokenUtil.generateToken(registerDetails);
-            return ResponseEntity.ok(new JwtResponse(token));
+            return ResponseEntity.ok(new JwtResponse(token, registerDetails.getFirstName()));
+
         }
 
     }
