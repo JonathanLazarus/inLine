@@ -3,7 +3,8 @@ package com.inLine.api;
 
 import com.inLine.SecurityAndJWT.AccountManagement.MyUserDetailsService;
 import com.inLine.SecurityAndJWT.jwt.JwtRequest;
-import com.inLine.SecurityAndJWT.jwt.JwtResponse;
+import com.inLine.SecurityAndJWT.jwt.LoginResponse;
+import com.inLine.SecurityAndJWT.jwt.RegisterResponse;
 import com.inLine.SecurityAndJWT.jwt.JwtTokenUtil;
 import com.inLine.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class AccountController {
         final Account newAccountDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getEmail());
         final String token = jwtTokenUtil.generateToken(newAccountDetails);
-        return ResponseEntity.ok(new JwtResponse(token, newAccountDetails.getFirstName()));
+        return ResponseEntity.ok(new LoginResponse(token, newAccountDetails.getFirstName(), newAccountDetails.getLastName(), newAccountDetails.getLevel()));
     }
 
     @PostMapping("/register/submit")
@@ -62,7 +63,7 @@ public class AccountController {
         } catch (UsernameNotFoundException e) {
             userDetailsService.addUser(registerDetails);
             final String token = jwtTokenUtil.generateToken(registerDetails);
-            return ResponseEntity.ok(new JwtResponse(token, registerDetails.getFirstName()));
+            return ResponseEntity.ok(new RegisterResponse(token));
 
         }
 
