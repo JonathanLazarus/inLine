@@ -24,17 +24,19 @@ export class AccountService {
     this.user = this.userSubject.asObservable();
   }
 
-  register(user: User): Observable<User> {
-    return this.http.post<string>(`${environment.backendURL}/register/submit`, user.getAsJSON())
+  register(user: User, password: string): Observable<User> {
+    return this.http.post<string>(`${environment.backendURL}/register/submit`, user.getAsJSON(password))
       .pipe(
         tap((JWToken: string) => {
           user.token = JWToken;
-          user.password = undefined; // Don't keep password in storage!
+
+          if (user.first_name === undefined) { return false; } // TODO: Part of error checking.
 
           localStorage.setItem('user', JSON.stringify(user));
           this.userSubject.next(user);
 
-          console.log(`Added user object: '${user}'`);
+          console.log('Added user object:', user);
+          return true;
         }),
         catchError(this.handleError<any>('register user'))
       );
@@ -44,22 +46,21 @@ export class AccountService {
     return this.http.post<string>(`${environment.backendURL}/login/submit`, {email, password})
       .pipe(
         tap((response: any) => {
-          const JSONResponse = JSON.parse(response);
-
           const registeredUser = new User(
             email,
-            undefined,
-            JSONResponse.account_type,
-            JSONResponse.first_name,
-            JSONResponse.last_name,
-            JSONResponse.storeList,
-            JSONResponse.token
+            response.account_type,
+            response.first_name,
+            response.last_name,
+            response.storeList,
+            response.token
           );
+          if (registeredUser.first_name === undefined) { return false; } // TODO: Part of error checking.
 
           localStorage.setItem('user', JSON.stringify(registeredUser));
           this.userSubject.next(registeredUser);
 
-          console.log(`Added user object: '${registeredUser}'`);
+          console.log('Added user object:', registeredUser);
+          return true;
         }),
         catchError(this.handleError<any>('login user'))
       );

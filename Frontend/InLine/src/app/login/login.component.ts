@@ -50,10 +50,7 @@ export class LoginComponent implements OnInit {
   get f(): { [p: string]: AbstractControl } { return this.form.controls; }
 
   onSubmit(): void {
-    this.accountService.login(this.f.email.value, this.f.password.value).subscribe(n => {
-      console.log('Next from Login.onSubmit()', n);
-    });
-    this.dialogRef.close();
+    this.accountService.login(this.f.email.value, this.f.password.value).subscribe(() => this.dialogRef.close());
   }
 
   close(): void {

@@ -59,17 +59,12 @@ export class RegisterComponent implements OnInit {
   onSubmit(): void {
     this.accountService.register(new User(
       this.f.email.value,
-      this.f.password.value,
       this.accountType,
       this.f.first_name.value,
       this.f.last_name.value,
       undefined,
       undefined
-    )).subscribe(n => {
-      console.log('Next from Register.onSubmit()', n);
-    });
-
-    this.dialogRef.close();
+    ), this.f.password.value).subscribe(() => this.dialogRef.close());
   }
 
 }
