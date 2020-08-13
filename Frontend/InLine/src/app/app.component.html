@@ -9,10 +9,10 @@
   </form>
 
   <span *ngIf="user">
-    <button mat-button [matMenuTriggerFor]="menu">{{user.username}}</button>
+    <button mat-button [matMenuTriggerFor]="menu">{{user.first_name}}</button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item >Account</button>
-      <button mat-menu-item *ngIf="user.accessLevel === AccountTypes.ADMIN">Add Store</button>
+      <button mat-menu-item *ngIf="user.account_type === AccountTypes.ADMIN">Add Store</button>
       <button mat-menu-item (click)="logout()">Log Out</button>
     </mat-menu>
   </span>

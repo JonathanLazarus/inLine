@@ -1,3 +1,3 @@
 export enum AccountTypes {
-  ADMIN, USER
+  ADMIN = 'ADMIN', USER = 'USER'
 }

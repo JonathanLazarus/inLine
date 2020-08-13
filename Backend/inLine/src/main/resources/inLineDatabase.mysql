@@ -42,7 +42,7 @@ CREATE TABLE store_hours (
 CREATE TABLE user_state (
 	account_id		INT NOT NULL AUTO_INCREMENT,
 	user_state		ENUM('idle', 'waiting', 'shopping'), 
-	store_id		INT,	# this for sure can be null
+	store_id		INT,
 	time_stamp		DATETIME,
 	PRIMARY KEY (account_id)
 );

@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { AccountService } from '../_services/account.service';
+import {User} from '../_objects/user';
 
 @Component({
   template: ''
@@ -41,7 +42,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      username: [''],
+      email: [''],
       password: ['']
     });
   }
@@ -49,10 +50,7 @@ export class LoginComponent implements OnInit {
   get f(): { [p: string]: AbstractControl } { return this.form.controls; }
 
   onSubmit(): void {
-    console.log(this.form.value);
-
-    this.accountService.login(this.f.username.value, this.f.password.value);
-    this.dialogRef.close();
+    this.accountService.login(this.f.email.value, this.f.password.value).subscribe(() => this.dialogRef.close());
   }
 
   close(): void {

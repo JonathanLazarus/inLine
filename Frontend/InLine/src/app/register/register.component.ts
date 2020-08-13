@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { AccountService } from '../_services/account.service';
 import { AccountTypes } from '../_objects/account-types';
+import {User} from '../_objects/user';
 
 @Component({
   template: ''
@@ -44,20 +45,26 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      username: [''],
+      first_name: [''],
+      last_name: [''],
       password: [''],
       email: [''],
       contactNumber: ['']
     });
+    this.accountType = AccountTypes.USER;
   }
 
   get f(): { [p: string]: AbstractControl } { return this.form.controls; }
 
   onSubmit(): void {
-    console.log(this.form.value, AccountTypes[this.accountType]);
-
-    this.accountService.register(this.f.username.value, this.f.password.value, this.accountType);
-    this.dialogRef.close();
+    this.accountService.register(new User(
+      this.f.email.value,
+      this.accountType,
+      this.f.first_name.value,
+      this.f.last_name.value,
+      undefined,
+      undefined
+    ), this.f.password.value).subscribe(() => this.dialogRef.close());
   }
 
 }
