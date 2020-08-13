@@ -55,6 +55,7 @@ public class JwtTokenUtil implements Serializable {
         return Jwts.builder()
                 .setSubject(account.getEmail())
                 .claim("authorities", account.getAuthorities())
+                .claim("id",account.getId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis()+ 60*60*100*jwtConfig.getHours()))//5 hours
                 .signWith(secretKey)
@@ -66,4 +67,8 @@ public class JwtTokenUtil implements Serializable {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+
+  public int getIdFromToken(String token) {
+    return (int) getAllClaimsFromToken(token).get("id");
+  }
 }

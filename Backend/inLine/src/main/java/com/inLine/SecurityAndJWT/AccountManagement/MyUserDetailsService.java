@@ -19,9 +19,9 @@ public class MyUserDetailsService implements UserDetailsService {
     PasswordEncoder passwordEncoder;
 
 
-    public void addUser(Account newAccount) {
+    public Account  addUser(Account newAccount) {
         newAccount.setEncodedPassword(passwordEncoder);
-        accountDao.save(newAccount);
+        return accountDao.save(newAccount);
     }
 
     @Override

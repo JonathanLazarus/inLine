@@ -60,8 +60,8 @@ public class AccountController {
             userDetailsService.loadUserByUsername(registerDetails.getEmail());
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("there is a account with this username");
         } catch (UsernameNotFoundException e) {
-            userDetailsService.addUser(registerDetails);
-            final String token = jwtTokenUtil.generateToken(registerDetails);
+            Account saved= userDetailsService.addUser(registerDetails);
+            final String token = jwtTokenUtil.generateToken(saved);
             return ResponseEntity.ok(new RegisterResponse(token));
         }
 
