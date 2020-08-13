@@ -11,7 +11,4 @@ import java.util.Optional;
 public interface AccountDao extends JpaRepository<Account, Integer> {
    @Query("FROM Account WHERE email = ?1")
    Optional<Account> selectUserByEmail(String username);
-
-   //@Query("SELECT a FROM Account a WHERE LOWER(a.email) LIKE LOWER(CONCAT('%',:email, '%'))")
-   //Optional<Account> selectUserByEmail(@Param("email") String email);
 }

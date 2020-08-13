@@ -43,14 +43,11 @@ public class AccountController {
 
     @PostMapping("/login/submit")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) {
-
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
         } catch (AuthenticationException e) {
-
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("username or password is incorrect");
         }
-
         final Account newAccountDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getEmail());
         final String token = jwtTokenUtil.generateToken(newAccountDetails);
@@ -64,10 +61,8 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("there is a account with this username");
         } catch (UsernameNotFoundException e) {
             userDetailsService.addUser(registerDetails);
-
             final String token = jwtTokenUtil.generateToken(registerDetails);
             return ResponseEntity.ok(new RegisterResponse(token));
-
         }
 
     }
