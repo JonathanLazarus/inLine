@@ -32,15 +32,16 @@ public class UserStatus {
     @Column(name = "time_stamp")
     private Timestamp datetime;
 
-    public UserStatus(//@JsonProperty("id") int id,
-                      @JsonProperty("state") Status state,
+    public UserStatus(@JsonProperty("state") Status state,
                       @JsonProperty("store_id") int storeId,
                       @JsonProperty("datetime") Timestamp datetime)
     {
-        //this.id = id;
         this.state = state;
         this.storeId = storeId;
         this.datetime = datetime;
+    }
+
+    public UserStatus() {
     }
 
     public int getId() {

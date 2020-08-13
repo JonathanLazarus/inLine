@@ -19,7 +19,7 @@ public class JwtTokenUtil implements Serializable {
     private final SecretKey secretKey;
     private final JwtConfig jwtConfig;
 
-@Autowired
+    @Autowired
     public JwtTokenUtil(SecretKey secretKey, JwtConfig jwtConfig) {
 
         this.secretKey = secretKey;
@@ -40,7 +40,7 @@ public class JwtTokenUtil implements Serializable {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
-    //for retrieveing any information from token we will need the secret key
+    //for retrieving any information from token we will need the secret key
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
     }

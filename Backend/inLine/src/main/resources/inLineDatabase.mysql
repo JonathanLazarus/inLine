@@ -4,12 +4,12 @@ USE inLine;
 
 CREATE TABLE accounts (
 	account_id 				INT NOT NULL AUTO_INCREMENT,
-	account_access_level 	ENUM('admin', 'user'),
+	account_access_level 	ENUM('ADMIN', 'USER'),
 	email 					VARCHAR(50),
 	phone_number 			VARCHAR(15),
 	first_name 				VARCHAR(25),
 	last_name 				VARCHAR(25),
-	account_password 		VARCHAR(50),
+	account_password 		VARCHAR(60),
 	PRIMARY KEY (account_id)
 );
 
@@ -45,16 +45,4 @@ CREATE TABLE user_state (
 	store_id		INT,	# this for sure can be null
 	time_stamp		DATETIME,
 	PRIMARY KEY (account_id)
-);
-
-CREATE TABLE location (
-	location_id		INT NOT NULL AUTO_INCREMENT,
-	street_name		VARCHAR(50),
-	house_number	VARCHAR(15),
-	apt_number		VARCHAR(15),
-	country			VARCHAR(50),
-	city			VARCHAR(50),
-	state			VARCHAR(50),
-	zip_code		VARCHAR(15),
-	PRIMARY KEY (location_id)
 );

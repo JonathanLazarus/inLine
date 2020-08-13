@@ -1,44 +1,30 @@
 package com.inLine.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "location")
+@Embeddable
 public class Location {
-
-    @Id
-    @GeneratedValue
-    @NonNull
-    @Column(name = "location_id")
-    private int id;
 
     @Column(name = "street_name")
     private String streetName;
-
     @Column(name = "house_number")
     private int houseNumber;
-
     @Column(name = "apt_number")
-    private int aptNumber;
-
+    private Integer aptNumber;
     @Column(name = "country")
     private String country;
-
     @Column(name = "city")
     private String city;
-
     @Column(name = "state")
     private String state;
-
     @Column(name = "zip_code")
     private int zip;
 
     public Location(@JsonProperty("street") String streetName,
                     @JsonProperty("house_number") int houseNumber,
-                    @JsonProperty("apt") int aptNumber,
+                    @JsonProperty("apt") Integer aptNumber,
                     @JsonProperty("country") String country,
                     @JsonProperty("city") String city,
                     @JsonProperty("state") String state,
@@ -53,12 +39,7 @@ public class Location {
         this.zip = zip;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public Location() {
     }
 
     public String getStreetName() {
@@ -77,11 +58,11 @@ public class Location {
         this.houseNumber = houseNumber;
     }
 
-    public int getAptNumber() {
+    public Integer getAptNumber() {
         return aptNumber;
     }
 
-    public void setAptNumber(int aptNumber) {
+    public void setAptNumber(Integer aptNumber) {
         this.aptNumber = aptNumber;
     }
 

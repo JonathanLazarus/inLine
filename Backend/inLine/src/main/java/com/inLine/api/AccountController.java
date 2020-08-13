@@ -12,9 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class AccountController {
@@ -41,6 +44,7 @@ public class AccountController {
         final String token = jwtTokenUtil.generateToken(newAccountDetails);
         return ResponseEntity.ok(new JwtResponse(token));
     }
+
     private void authenticate(String username, String password) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
@@ -50,10 +54,10 @@ public class AccountController {
     }
 
     @PostMapping("/register/submit")
-    public ResponseEntity<?> CreateAccount (@RequestBody Account registerDetails) throws Exception {
+    public ResponseEntity<?> createAccount (@RequestBody Account registerDetails) throws Exception {
         try{
             userDetailsService.loadUserByUsername(registerDetails.getEmail());
-            throw new Exception("there is a account with this username");
+            throw new Exception("there is an account with this username");
         }catch (UsernameNotFoundException e){
 
             userDetailsService.addUser(registerDetails);
@@ -62,6 +66,11 @@ public class AccountController {
             return ResponseEntity.ok(new JwtResponse(token));
         }
 
+    }
+
+    @GetMapping("/account/all")
+    public List<Account> getAllAccounts() {
+        return userDetailsService.getAllAccounts();
     }
 
 }

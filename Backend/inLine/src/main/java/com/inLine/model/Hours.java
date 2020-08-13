@@ -16,8 +16,10 @@ public class Hours {
     @Column(name = "hours_id")
     private int id;
 
-    @Column(name = "store_id")
-    private int storeId;
+    //Tells JPA that there are many "hour" classes (one for each day of the week) for each store.
+    //@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    //@JoinColumn(name = "")
+    //private Store store;
 
     @Column(name = "day_of_the_week")
     private String day;
@@ -28,15 +30,33 @@ public class Hours {
     @Column(name = "time_close")
     private Time close;
 
-    public Hours(@JsonProperty("store_id") int storeId,
-                 @JsonProperty("day") String day,
-                 @JsonProperty("open") Time open,
-                 @JsonProperty("close") Time close)
+    public Hours() {
+    }
+
+    /*
+    public Hours(@JsonProperty("day") String day,
+                 @JsonProperty("open_hour") int openingHour,
+                 @JsonProperty("open_minute") int openingMinute,
+                 @JsonProperty("open_second") int openingSecond,
+                 @JsonProperty("close_hour") int closingHour,
+                 @JsonProperty("close_minute") int closingMinute,
+                 @JsonProperty("close_second") int closingSecond)
     {
-        this.storeId = storeId;
+
         this.day = day;
-        this.open = open;
-        this.close = close;
+        this.open = new Time(openingHour, openingMinute, openingSecond);
+        this.close = new Time(closingHour, closingMinute, closingSecond);
+    }
+    */
+
+    //Constructor via Strings - uses 00:00:00 format. See Time javadocs.
+    public Hours(@JsonProperty("day") String day,
+                 @JsonProperty("open") String open,
+                 @JsonProperty("close") String close)
+    {
+        this.day = day;
+        this.open = Time.valueOf(open);
+        this.close = Time.valueOf(close);
     }
 
     public int getId() {
@@ -45,14 +65,6 @@ public class Hours {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getStoreId() {
-        return storeId;
-    }
-
-    public void setStoreId(int storeId) {
-        this.storeId = storeId;
     }
 
     public String getDay() {

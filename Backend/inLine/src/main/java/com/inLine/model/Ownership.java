@@ -19,6 +19,9 @@ public class Ownership {
     @Column(name = "store_id")
     private int storeId;
 
+    public Ownership() {
+    }
+
     public Ownership(//@JsonProperty("id") int id,
                      @JsonProperty("account_id") int accountId,
                      @JsonProperty("store_id") int storeId)

@@ -69,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/", "/index", "/css/*", "/js/*").permitAll()
-                .antMatchers("/login/submit", "/register/submit").permitAll()
+                .antMatchers("/login/submit", "/register/submit", "/get/all").permitAll()
                 .antMatchers("/stores", "/stores.*").permitAll()
                 //.antMatchers("/user").hasRole(Account.Access.USER.name())
                 ///.antMatchers("/admin").hasRole(Account.Access.ADMIN.name())

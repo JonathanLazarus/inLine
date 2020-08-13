@@ -12,7 +12,7 @@ import javax.crypto.SecretKey;
 @ConfigurationProperties(prefix = "application.jwt")
 public class JwtConfig {
     private String prefix = "Bearer ";
-    private int hours= 1;
+    private int hours = 1;
     private String secretKey;
 
     public JwtConfig() {
