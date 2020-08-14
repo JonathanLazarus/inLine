@@ -12,21 +12,17 @@ public class Ownership {
     @GeneratedValue
     @Column(name = "ownership_id")
     private int id;
-
     @Column(name = "account_id")
     private int accountId;
-
     @Column(name = "store_id")
     private int storeId;
 
     public Ownership() {
     }
 
-    public Ownership(//@JsonProperty("id") int id,
-                     @JsonProperty("account_id") int accountId,
+    public Ownership(@JsonProperty("account_id") int accountId,
                      @JsonProperty("store_id") int storeId)
     {
-        //this.id = id;
         this.accountId = accountId;
         this.storeId = storeId;
     }

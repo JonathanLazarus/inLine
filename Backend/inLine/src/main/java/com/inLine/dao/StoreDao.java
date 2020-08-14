@@ -10,5 +10,4 @@ public interface StoreDao extends JpaRepository<Store, Integer> {
 
     @Query("FROM Store WHERE UPPER(name) LIKE ?#{[0].toUpperCase()}%")
     List<Store> findStoresByPrefix(String prefix);
-
 }

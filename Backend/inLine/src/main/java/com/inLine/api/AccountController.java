@@ -1,7 +1,5 @@
 package com.inLine.api;
 
-
-
 import com.inLine.SecurityAndJWT.AccountManagement.MyUserDetailsService;
 import com.inLine.SecurityAndJWT.jwt.JwtRequest;
 import com.inLine.SecurityAndJWT.jwt.LoginResponse;
@@ -15,18 +13,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
 public class AccountController {
-
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -60,8 +52,8 @@ public class AccountController {
             userDetailsService.loadUserByUsername(registerDetails.getEmail());
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("there is a account with this username");
         } catch (UsernameNotFoundException e) {
-            Account saved= userDetailsService.addUser(registerDetails);
-            final String token = jwtTokenUtil.generateToken(saved);
+            registerDetails = userDetailsService.addUser(registerDetails);
+            final String token = jwtTokenUtil.generateToken(registerDetails);
             return ResponseEntity.ok(new RegisterResponse(token));
         }
 

@@ -19,7 +19,7 @@ public class MyUserDetailsService implements UserDetailsService {
     PasswordEncoder passwordEncoder;
 
 
-    public Account  addUser(Account newAccount) {
+    public Account addUser(Account newAccount) {
         newAccount.setEncodedPassword(passwordEncoder);
         return accountDao.save(newAccount);
     }

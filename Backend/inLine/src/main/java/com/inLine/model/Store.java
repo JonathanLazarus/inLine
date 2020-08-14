@@ -1,15 +1,12 @@
 package com.inLine.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 @Table(name = "stores")
 public class Store {
@@ -28,16 +25,17 @@ public class Store {
     private int capacity;
     @Embedded
     private Location location;
+
     //@OneToMany - Tells JPA that for each "Store" there are many "hours."
     //mappedBy - tells JPA which hours belong to this store by getting the store_id that lives in the "store' column within the "hours" table.
     @OneToMany(targetEntity = Hours.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "store_id", referencedColumnName = "store_id")
-    private List<Hours> hours;
+    final private List<Hours> hours = new ArrayList<>(7);
 
     @ManyToMany(targetEntity = Account.class, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinTable(name = "ownership", joinColumns = @JoinColumn(name = "store_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
-    //@JsonBackReference
-    private List<Account> managers;
+    @JsonIgnore
+    private List<Account> managers = new ArrayList<>();
 
 
     public Store(){ }
@@ -54,7 +52,7 @@ public class Store {
         this.phoneNumber = phoneNumber;
         this.capacity = capacity;
         this.location = location;
-        this.hours = hours;
+        this.hours.addAll(hours);
     }
 
     public int getId() { return id; }
@@ -96,18 +94,29 @@ public class Store {
     }
 
     public List<Hours> getHours() {
-        return hours;
+        Collections.sort(this.hours);
+        return this.hours;
     }
 
-    public void setHours(ArrayList<Hours> hours) {
-        this.hours = hours;
+    public void changeHours(Hours h) {
+        Collections.sort(this.hours);
+        this.hours.set(h.getDayEnum().ordinal(), h);
     }
 
+    @JsonIgnore
     public List<Account> getManagers() {
         return managers;
     }
 
     public void setManagers(List<Account> managers) {
         this.managers = managers;
+    }
+
+    public void addManager(Account admin) {
+        managers.add(admin);
+    }
+
+    public void removeManager(Account admin) {
+        managers.remove(admin);
     }
 }

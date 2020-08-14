@@ -1,30 +1,22 @@
 package com.inLine.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 @Table(name = "accounts")
 public class Account implements UserDetails {
-
     @Id
     @GeneratedValue
     @Column(name = "account_id")
     private int id;
-    @Column(name = "account_access_level")
+    @Column(name = "account_access_level", columnDefinition = "enum('USER', 'ADMIN')")
     private String level;
     @Column(name = "email")
     private String email;
@@ -36,18 +28,21 @@ public class Account implements UserDetails {
     private String lastName;
     @Column(name = "account_password")
     private String password;
-
+    @JsonIgnore
     @ManyToMany(mappedBy = "managers", fetch = FetchType.LAZY)
-    //@JsonManagedReference
-    private List<Store> managedStores;
+    private List<Store> managedStores = new ArrayList<>();
 
-    public Account(@JsonProperty("account_type") String level,
+    private enum Access {
+        ADMIN, USER
+    }
+
+    public Account(@JsonProperty("account_type") Access level,
                    @JsonProperty("email") String email,
                    @JsonProperty("phone") long phoneNumber,
                    @JsonProperty("first_name") String firstName,
                    @JsonProperty("last_name") String lastName,
                    @JsonProperty("password") String password) {
-        this.level = level;
+        this.level = level.toString();
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.firstName = firstName;
@@ -73,7 +68,7 @@ public class Account implements UserDetails {
     }
 
     public String getLevel() {
-        return level.toString();
+        return level;
     }
 
     public void setLevel(String level) {
@@ -116,11 +111,14 @@ public class Account implements UserDetails {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getGrantedAuthorities();
     }
 
+    @JsonIgnore
     @Override
     public String getPassword() {
         return password;
@@ -131,21 +129,25 @@ public class Account implements UserDetails {
         return email;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;
@@ -161,5 +163,13 @@ public class Account implements UserDetails {
 
     public void setManagedStores(List<Store> managedStores) {
         this.managedStores = managedStores;
+    }
+
+    public void addStore(Store s) {
+        managedStores.add(s);
+    }
+
+    public void removeStore(Store s){
+        managedStores.remove(s);
     }
 }
