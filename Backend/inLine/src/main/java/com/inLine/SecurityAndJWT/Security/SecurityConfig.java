@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.crypto.SecretKey;
 
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:4200")
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -60,7 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
+        //.permitAll()- does not require jwt
+        //.hasRole()- requires jwt
         http
                 .csrf().disable()
                 .sessionManagement()
