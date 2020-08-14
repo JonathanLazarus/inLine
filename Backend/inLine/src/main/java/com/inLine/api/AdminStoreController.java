@@ -6,12 +6,10 @@ import com.inLine.service.AdminStoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/admin/stores")
-@PreAuthorize("hasRole('ROLE_ADMIN')") //all methods in this controller are preauthorized to ADMINs only.
 public class AdminStoreController {
 
     @Autowired

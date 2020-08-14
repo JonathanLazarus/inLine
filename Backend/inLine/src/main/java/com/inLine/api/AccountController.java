@@ -1,6 +1,6 @@
 package com.inLine.api;
 
-import com.inLine.SecurityAndJWT.AccountManagement.MyUserDetailsService;
+import com.inLine.service.AccountService;
 import com.inLine.SecurityAndJWT.jwt.JwtRequest;
 import com.inLine.SecurityAndJWT.jwt.LoginResponse;
 import com.inLine.SecurityAndJWT.jwt.RegisterResponse;
@@ -25,9 +25,9 @@ public class AccountController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
-    private MyUserDetailsService userDetailsService;
+    private AccountService userDetailsService;
 
-    public AccountController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, MyUserDetailsService userDetailsService) {
+    public AccountController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, AccountService userDetailsService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userDetailsService = userDetailsService;

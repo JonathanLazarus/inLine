@@ -123,7 +123,7 @@ public class Account implements UserDetails {
     public String getPassword() {
         return password;
     }
-
+    @JsonIgnore
     @Override
     public String getUsername() {
         return email;

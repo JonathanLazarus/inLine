@@ -1,13 +1,12 @@
 package com.inLine.SecurityAndJWT.jwt;
 
 
-import com.inLine.SecurityAndJWT.AccountManagement.MyUserDetailsService;
+import com.inLine.service.AccountService;
 import com.inLine.model.Account;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -21,7 +20,7 @@ import java.io.IOException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
-    private MyUserDetailsService jwtUserDetailsService;
+    private AccountService jwtUserDetailsService;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 

@@ -1,8 +1,7 @@
 package com.inLine.SecurityAndJWT.Security;
 
-import com.inLine.SecurityAndJWT.AccountManagement.MyUserDetailsService;
+import com.inLine.service.AccountService;
 import com.inLine.SecurityAndJWT.jwt.JwtRequestFilter;
-import com.inLine.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,15 +16,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.crypto.SecretKey;
 
+@CrossOrigin(origins = "http://localhost:8080")
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final MyUserDetailsService applicationUserService;
+    private final AccountService applicationUserService;
 
     private final SecretKey secretKey;
     private final PasswordEncoder passwordEncoder;
@@ -48,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    public SecurityConfig(MyUserDetailsService applicationUserService, SecretKey secretKey, PasswordEncoder passwordEncoder, UserDetailsService jwtUserDetailsService, JwtRequestFilter jwtRequestFilter) {
+    public SecurityConfig(AccountService applicationUserService, SecretKey secretKey, PasswordEncoder passwordEncoder, UserDetailsService jwtUserDetailsService, JwtRequestFilter jwtRequestFilter) {
         this.applicationUserService = applicationUserService;
 
         this.secretKey = secretKey;
@@ -68,21 +69,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Add a filter to validate the tokens with every request
                 .addFilterAfter(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/", "/index", "/css/*", "/js/*").permitAll()
-                .antMatchers("/login/submit", "/register/submit", "/get/all").permitAll()
-                .antMatchers("/stores", "/stores.*").permitAll()
-                //.antMatchers("/user").hasRole(Account.Access.USER.name())
-                ///.antMatchers("/admin").hasRole(Account.Access.ADMIN.name())
+                .antMatchers("/", "/index","/*.js", "/*.js.*", "/css/*", "/js/*").permitAll()
+                .antMatchers("/login/submit", "/register/submit", "/get/all").permitAll()//account
+                .antMatchers("/stores", "/stores/*").permitAll()//stores
+                .antMatchers("/admin/stores").hasRole("ADMIN")
+                //.antMatchers("").permitAll()
+                //.antMatchers("").hasRole("USER")
                 .anyRequest()
                 .authenticated();
     }
 
 
-        @Bean
-        public DaoAuthenticationProvider daoAuthenticationProvider(){
-            DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-            provider.setPasswordEncoder(passwordEncoder);
-            provider.setUserDetailsService(applicationUserService);
-            return provider;
-        }
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder);
+        provider.setUserDetailsService(applicationUserService);
+        return provider;
+    }
 }

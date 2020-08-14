@@ -1,4 +1,4 @@
-package com.inLine.SecurityAndJWT.AccountManagement;
+package com.inLine.service;
 
 
 import com.inLine.dao.AccountDao;
@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MyUserDetailsService implements UserDetailsService {
+public class AccountService implements UserDetailsService {
 
     @Autowired
     AccountDao accountDao;
