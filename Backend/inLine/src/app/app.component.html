@@ -1,0 +1,31 @@
+<mat-toolbar class="content" color="primary">
+  <button mat-icon-button routerLink="/">
+    <img src="" alt="Home">
+  </button>
+  <form (ngSubmit)="search()">
+    <label>
+      <input type="text" placeholder="Search..." name="keyword">
+    </label>
+  </form>
+
+  <span *ngIf="user">
+    <button mat-button [matMenuTriggerFor]="menu">{{user.first_name}}</button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item >Account</button>
+      <button mat-menu-item *ngIf="user.account_type === AccountTypes.ADMIN">Add Store</button>
+      <button mat-menu-item (click)="logout()">Log Out</button>
+    </mat-menu>
+  </span>
+
+  <span *ngIf="!user">
+    <button mat-button routerLink="/login">Log In</button>
+  </span>
+</mat-toolbar>
+
+<div *ngIf="!user">
+  <h1>Welcome to InLine</h1>
+  <p>[Insert reason for InLine's existence, followed by motivational words]</p>
+  <button mat-raised-button routerLink="/register">Register</button>
+</div>
+<app-store-list *ngIf="user"></app-store-list>
+<router-outlet></router-outlet>
