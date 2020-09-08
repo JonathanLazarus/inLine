@@ -59,6 +59,7 @@ public class AdminStoreService {
         Store s = tokenHasAccessAndStoreExists(storeId, token);
         if(s == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         update.setId(storeId);
+        update.setManagers(s.getManagers());
         storeDao.save(update);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

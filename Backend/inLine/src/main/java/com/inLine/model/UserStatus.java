@@ -2,24 +2,43 @@ package com.inLine.model;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
+@NoArgsConstructor
+@Setter
+@Getter
 @Entity
 @Table(name = "user_state")
 public class UserStatus {
 
+    @Schema(hidden = true)
     @Id
     @GeneratedValue
     @Column(name = "id")
     private int id;
+
+    @NotEmpty
     @Column(name = "user_state", columnDefinition = "enum('IDLE', 'WAITING', 'SHOPPING')")
     private String state;
+
+    @NotNull
     @Column(name = "store_id")
     private int storeId;
+
+    @NotNull
     @Column(name = "time_stamp")
     private Timestamp datetime;
+
+    @OneToOne(mappedBy = "status")
+    private Account user;
 
     private enum Status {
         IDLE, WAITING, SHOPPING
@@ -33,38 +52,7 @@ public class UserStatus {
         this.datetime = new Timestamp(System.currentTimeMillis());
     }
 
-    public UserStatus() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public int getStoreId() {
-        return storeId;
-    }
-
-    public void setStoreId(int storeId) {
-        this.storeId = storeId;
-    }
-
-    public Timestamp getDatetime() {
-        return datetime;
-    }
-
     public void setDatetime(Timestamp datetime) {
-        this.datetime = datetime;
+        this.datetime = new Timestamp(System.currentTimeMillis());
     }
 }

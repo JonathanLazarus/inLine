@@ -1,36 +1,96 @@
 package com.inLine.model;
 
 import com.fasterxml.jackson.annotation.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.*;
 
+@NoArgsConstructor
 @Entity
 @Table(name = "accounts")
 public class Account implements UserDetails {
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     @Column(name = "account_id")
+    @Getter @Setter
+    @Schema(hidden = true)
     private int id;
+
+    @Schema(description = "Account type.",
+            required = true,
+            allowableValues = {"ADMIN", "USER"},
+            example = "USER",
+            name = "account_type")
+    @NotBlank @Getter @Setter
     @Column(name = "account_access_level", columnDefinition = "enum('USER', 'ADMIN')")
     private String level;
+
+    @Schema(description = "Email of account holder, doubles as username.",
+            example = "dylan123@email.com",
+            name = "email",
+            required = true)
+    @NotBlank @Email
+    @Getter @Setter
     @Column(name = "email")
     private String email;
+
+    @Schema(description = "Phone number",
+            type = "long",
+            example = "3125098776",
+            name = "phone",
+            required = true)
+    @Digits(integer = 10, fraction = 0)
+    @Getter @Setter
+    @Positive
     @Column(name = "phone_number")
     private long phoneNumber;
+
+    @Schema(description = "First name of the account holder.",
+            example = "Dylan",
+            name = "first_name",
+            required = true)
+    @NotBlank
+    @Getter @Setter
     @Column(name = "first_name")
     private String firstName;
+
+    @Schema(description = "Last name of account holder.",
+            example = "Pratt",
+            name = "last_name",
+            required = true)
+    @NotBlank
+    @Getter @Setter
     @Column(name = "last_name")
     private String lastName;
+
+    @Schema(description = "Account password.",
+            example = "Pa$$word123",
+            name = "password",
+            required = true)
+    @NotBlank
+    @Setter
     @Column(name = "account_password")
     private String password;
+
     @JsonIgnore
+    @Getter @Setter
     @ManyToMany(mappedBy = "managers", fetch = FetchType.LAZY)
     private List<Store> managedStores = new ArrayList<>();
+
+    @JsonIgnore
+    @Getter @Setter
+    @OneToOne
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    private UserStatus status;
+
 
     private enum Access {
         ADMIN, USER
@@ -41,7 +101,8 @@ public class Account implements UserDetails {
                    @JsonProperty("phone") long phoneNumber,
                    @JsonProperty("first_name") String firstName,
                    @JsonProperty("last_name") String lastName,
-                   @JsonProperty("password") String password) {
+                   @JsonProperty("password")  String password)
+    {
         this.level = level.toString();
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -50,66 +111,10 @@ public class Account implements UserDetails {
         this.password = password;
     }
 
-    public Account() {
-    }
-
     public Set<SimpleGrantedAuthority> getGrantedAuthorities(){
         Set<SimpleGrantedAuthority> permissions = new HashSet<>();
         permissions.add(new SimpleGrantedAuthority("ROLE_" + level.toUpperCase()));
         return permissions;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public long getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(long phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     @JsonIgnore
@@ -155,14 +160,6 @@ public class Account implements UserDetails {
 
     public void setEncodedPassword(PasswordEncoder passwordEncoder) {
         this.password=passwordEncoder.encode(password);
-    }
-
-    public List<Store> getManagedStores() {
-        return managedStores;
-    }
-
-    public void setManagedStores(List<Store> managedStores) {
-        this.managedStores = managedStores;
     }
 
     public void addStore(Store s) {

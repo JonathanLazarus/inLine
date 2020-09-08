@@ -70,6 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/", "/index","/*.js", "/*.js.*", "/css/*", "/js/*").permitAll()
+                .antMatchers("/v3/api-docs/**", "/api-docs", "/api", "/api/**", "/api.*", "swagger.json", "/swagger-ui.html", "/swagger-ui/**", "/swagger-config", "/configuration/ui", "/swagger-resources/**", "/swagger-resources", "/configuration/security", "/webjars/**").permitAll()//OpenAPI
                 .antMatchers("/login/submit", "/register/submit", "/get/all").permitAll()//account
                 .antMatchers("/stores", "/stores/*").permitAll()//stores
                 .antMatchers("/admin/stores").hasRole("ADMIN")

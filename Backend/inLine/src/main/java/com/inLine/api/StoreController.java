@@ -5,6 +5,9 @@ import com.inLine.service.StoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -15,12 +18,12 @@ public class StoreController {
     private StoreService storeService;
 
     @GetMapping(path = "/{id}")
-    public Store getStoreById(@PathVariable("id") int id) {
+    public Store getStoreById(@PathVariable(name = "id") @Positive int id) {
         return storeService.getStoreById(id);
     }
 
     @GetMapping(path = "/search-prefix")
-    public List<Store> getStoresWithPrefix(@RequestParam String prefix) {
+    public List<Store> getStoresWithPrefix(@RequestParam(name = "prefix") @NotBlank String prefix) {
         return storeService.getStoresWithPrefix(prefix);
     }
 }

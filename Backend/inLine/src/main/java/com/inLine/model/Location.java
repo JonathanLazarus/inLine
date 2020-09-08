@@ -1,24 +1,75 @@
 package com.inLine.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
+@NoArgsConstructor
+@Setter
+@Getter
 @Embeddable
 public class Location {
 
+    @Schema(description = "Street name.",
+            example = "Main Street",
+            name = "street",
+            required = true)
+    @NotBlank
     @Column(name = "street_name")
     private String streetName;
+
+    @Schema(description = "House/building number.",
+            example = "7001",
+            name = "house_number",
+            required = true)
+    @Positive
     @Column(name = "house_number")
     private int houseNumber;
+
+    @Schema(description = "Apartment number.",
+            example = "8",
+            name = "apt",
+            nullable = true)
+    @Nullable
     @Column(name = "apt_number")
     private Integer aptNumber;
+
+    @Schema(description = "Country.",
+            example = "United States",
+            name = "country",
+            required = true)
+    @NotBlank
     @Column(name = "country")
     private String country;
+
+    @Schema(description = "City.",
+            example = "Miami",
+            name = "city",
+            required = true)
+    @NotBlank
     @Column(name = "city")
     private String city;
+
+    @Schema(description = "State",
+            example = "FL",
+            name = "state",
+            required = true)
     @Column(name = "state")
+    @NotBlank
     private String state;
+
+    @Schema(description = "Zip code.",
+            example = "81509",
+            name = "zip",
+            required = true)
+    @Digits(integer = 5, fraction = 0)
+    @Positive
     @Column(name = "zip_code")
     private int zip;
 
@@ -36,65 +87,6 @@ public class Location {
         this.country = country;
         this.city = city;
         this.state = state;
-        this.zip = zip;
-    }
-
-    public Location() {
-    }
-
-    public String getStreetName() {
-        return streetName;
-    }
-
-    public void setStreetName(String streetName) {
-        this.streetName = streetName;
-    }
-
-    public int getHouseNumber() {
-        return houseNumber;
-    }
-
-    public void setHouseNumber(int houseNumber) {
-        this.houseNumber = houseNumber;
-    }
-
-    public Integer getAptNumber() {
-        return aptNumber;
-    }
-
-    public void setAptNumber(Integer aptNumber) {
-        this.aptNumber = aptNumber;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public int getZip() {
-        return zip;
-    }
-
-    public void setZip(int zip) {
         this.zip = zip;
     }
 }
