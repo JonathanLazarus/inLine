@@ -5,6 +5,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Filters;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.Target;
+import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +27,7 @@ public class Account implements UserDetails {
     @Getter @Setter
     @Schema(hidden = true)
     private int id;
+
 
     @Schema(description = "Account type.",
             required = true,
@@ -85,12 +90,21 @@ public class Account implements UserDetails {
     @ManyToMany(mappedBy = "managers", fetch = FetchType.LAZY)
     private List<Store> managedStores = new ArrayList<>();
 
+    //TODO: when an account is deleted, you also want to remove its associated UserStatuses --> Account is parent of UserStatus
     @JsonIgnore
     @Getter @Setter
-    @OneToOne
-    @JoinColumn(name = "status_id", referencedColumnName = "id")
-    private UserStatus status;
+    @OneToMany(mappedBy = "user",
+               cascade = CascadeType.ALL,
+               orphanRemoval = true) //Owning side
+    @Where(clause = "NOT active")
+    private List<UserStatus> history = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user",
+              cascade = CascadeType.ALL,
+              orphanRemoval = true)
+    @Where(clause = "active")
+    @JsonIgnore
+    private List<UserStatus> status;
 
     private enum Access {
         ADMIN, USER
@@ -125,9 +139,8 @@ public class Account implements UserDetails {
 
     @JsonIgnore
     @Override
-    public String getPassword() {
-        return password;
-    }
+    public String getPassword() { return password; }
+
     @JsonIgnore
     @Override
     public String getUsername() {
@@ -168,5 +181,31 @@ public class Account implements UserDetails {
 
     public void removeStore(Store s){
         managedStores.remove(s);
+    }
+
+    public void addUserStateToHistory(UserStatus status) {
+        this.history.add(status);
+    }
+
+    @JsonIgnore
+    public UserStatus getStatus() {
+        return this.status.isEmpty() ? null : this.status.get(0);
+    }
+
+    public void setStatus(UserStatus us) {
+        this.status.add(0, us);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null) return false;
+      if (!(o instanceof UserStatus)) return false;
+      return this.id == ((UserStatus) o).getId();
+    }
+
+    @Override
+    public int hashCode() {
+      return this.id;
     }
 }

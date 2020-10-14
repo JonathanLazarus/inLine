@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -73,10 +74,34 @@ public class Store {
     final private List<@Valid Hours> hours = new ArrayList<>(7);
 
     @Size(min = 1)
-    @ManyToMany(targetEntity = Account.class, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinTable(name = "ownership", joinColumns = @JoinColumn(name = "store_id"), inverseJoinColumns = @JoinColumn(name = "account_id"))
+    @ManyToMany(targetEntity = Account.class,
+                cascade = CascadeType.PERSIST,
+                fetch = FetchType.LAZY)
+    @JoinTable(name = "ownership",
+               joinColumns = @JoinColumn(name = "store_id"),
+               inverseJoinColumns = @JoinColumn(name = "account_id"))
     @JsonIgnore
     private List<@Valid Account> managers = new ArrayList<>();
+
+    //TODO: Validate
+    //TODO: when a Store gets deleted, you want its queue to be deleted as well. --> Stare is parent of UserStatus
+    @Schema(description = "List of all queued \"Waiting\" user states to this Store, aka, the queue")
+    @OneToMany(mappedBy = "store",
+               cascade = CascadeType.PERSIST,
+               orphanRemoval = true) //Owning side
+    @Where(clause = "user_state = 'WAITING' AND active")
+    @JsonIgnore
+    private List<UserStatus> queue = new ArrayList<>();
+
+    //TODO: Validate
+    //TODO: when a Store gets deleted, you want its shoppingQueue to be deleted as well. --> Store is parent of UserStatus
+    @Schema(description = "List of all queued \"Shopping\" user states to this Store, aka, the shoppers")
+    @OneToMany(mappedBy = "store",
+               cascade = CascadeType.PERSIST,
+               orphanRemoval = true) //Owning side
+    @Where(clause = "user_state = 'SHOPPING' AND active")
+    @JsonIgnore
+    private List<UserStatus> shoppers = new ArrayList<>();
 
     public Store(@JsonProperty("name") String name,
                  @JsonProperty("email") String email,
@@ -115,4 +140,93 @@ public class Store {
     public void removeManager(Account admin) {
         managers.remove(admin);
     }
+
+    public void addUserStatus(UserStatus us) {
+        this.queue.add(us);
+    }
+
+    public UserStatus enqueue(Account user) {
+        try{
+            if(!user.getStatus().getState().equals("IDLE")) return null;
+        } catch (NullPointerException e) {}
+        UserStatus us = new UserStatus(UserStatus.Status.WAITING, user, this);
+        //user.addUserStateToHistory(us);
+        this.queue.add(us);
+        return us;
+    }
+
+    public List<UserStatus> dequeue(Account user) {
+        List<UserStatus> statusList = new ArrayList<>();
+        if(!validUser(user, "WAITING")) return statusList;
+        UserStatus us = user.getStatus();
+        us.makeInactive();
+        statusList.add(us);
+        us = new UserStatus(UserStatus.Status.IDLE, user, this);
+        statusList.add(us);
+        return statusList;
+    }
+
+    @JsonIgnore
+    public Account getNextUserOnQueue() {
+        return this.queue.get(0).getUser();
+    }
+
+    public List<UserStatus> enShop(Account user) {
+        List<UserStatus> statusList = new ArrayList<>();
+        if(!validUser(user, "WAITING")) return statusList;
+        if(!user.equals(getNextUserOnQueue())) return statusList;
+        UserStatus us = user.getStatus();
+        us.makeInactive();
+        statusList.add(us);
+        us = new UserStatus(UserStatus.Status.SHOPPING, user, this);
+        statusList.add(us);
+        return statusList;
+    }
+
+    public UserStatus deShop(Account user) {
+        if(!validUser(user, "SHOPPING")) return null;
+        if(this.shoppers.remove(user.getStatus())) {
+            UserStatus us = new UserStatus(UserStatus.Status.IDLE, user, this);
+            user.addUserStateToHistory(us);
+            this.shoppers.add(us);
+            return us;
+        }
+        return null;
+    }
+
+    private boolean validUser(Account user, String state) {
+        if (user == null) return false;
+        if(user.getStatus() == null) return true;
+        return user.getStatus().getState().equals(state) && user.getStatus().getStore().equals(this);
+    }
+
+    @JsonProperty("queue_size")
+    public int getQueueSize() {
+        return this.queue.size();
+    }
+
+    @JsonProperty("amount_of_shoppers")
+    public int getShoppersSize() {
+        return this.shoppers.size();
+    }
+
+    public int getPlaceInQueue(Account user) {
+        if(!validUser(user, "WAITING")) return -1;
+        return this.queue.indexOf(user.getStatus()) + 1;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj == this) return true;
+        if (!(obj instanceof Store)) return false;
+        return this.id == ((Store) obj).id;
+    }
 }
+
+

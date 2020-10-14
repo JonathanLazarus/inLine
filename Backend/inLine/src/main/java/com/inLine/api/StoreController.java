@@ -1,6 +1,7 @@
 package com.inLine.api;
 
 import com.inLine.model.Store;
+import com.inLine.model.UserStatus;
 import com.inLine.service.StoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,5 +26,10 @@ public class StoreController {
     @GetMapping(path = "/search-prefix")
     public List<Store> getStoresWithPrefix(@RequestParam(name = "prefix") @NotBlank String prefix) {
         return storeService.getStoresWithPrefix(prefix);
+    }
+
+    @GetMapping(path = "/{id}/queue")
+    public List<UserStatus> getStoreQueueById(@PathVariable(name = "id") @Positive int id) {
+        return storeService.getQueueById(id);
     }
 }

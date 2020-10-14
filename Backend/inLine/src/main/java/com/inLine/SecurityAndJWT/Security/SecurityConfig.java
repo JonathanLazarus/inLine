@@ -73,8 +73,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/index","/*.js", "/*.js.*", "/css/*", "/js/*").permitAll()
                 .antMatchers("/v3/api-docs/**", "/api-docs", "/api", "/api/**", "/api.*", "swagger.json", "/swagger-ui.html", "/swagger-ui/**", "/swagger-config", "/configuration/ui", "/swagger-resources/**", "/swagger-resources", "/configuration/security", "/webjars/**").permitAll()//OpenAPI
                 .antMatchers("/login/submit", "/register/submit", "/get/all").permitAll()//account
-                .antMatchers("/stores", "/stores/*").permitAll()//stores
+                .antMatchers("/stores", "/stores/**").permitAll()//stores
                 .antMatchers("/admin/stores").hasRole("ADMIN")
+                .antMatchers("/queue", "/queue/**", "/user", "/user/**").hasRole("USER")
                 //.antMatchers("").permitAll()
                 //.antMatchers("").hasRole("USER")
                 .anyRequest()
